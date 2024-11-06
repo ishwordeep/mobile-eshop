@@ -20,12 +20,27 @@ class SubcategoryController extends Controller
     public function index(Request $request)
     {
         try {
-            $perPage = $request->input('per_page', 10);
-            $sortBy = $request->input('sort_by', 'created_at'); // Default sorting by 'created_at'
-            $sortOrder = $request->input('sort_order', 'desc'); // Default sort order is 'desc',other option is 'asc'
 
-            // $query = Subcategory::query();
-            $query = Subcategory::with('category')->orderBy($sortBy, $sortOrder);
+
+            $perPage = $request->input('per_page', 10);
+            $sortBy = $request->input('sort_by', 'created_at');
+            $sortOrder = $request->input('sort_order', 'desc');
+
+            $query = Subcategory::with('category');
+
+            // Apply keyword filtering if provided
+            if ($request->filled('keyword')) {
+                $keyword = $request->input('keyword');
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('description', 'like', '%' . $keyword . '%');
+                });
+            }
+
+            // Apply sorting
+            $query->orderBy($sortBy, $sortOrder);
+
+            // Paginate the results
             $items = $query->paginate($perPage);
 
             return apiResponse([

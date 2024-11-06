@@ -21,12 +21,24 @@ class CategoryController extends Controller
 
         try {
             $perPage = $request->input('per_page', 10);
-            $sortBy = $request->input('sort_by', 'created_at'); // Default sorting by 'created_at'
-            $sortOrder = $request->input('sort_order', 'desc'); // Default sort order is 'desc',other option is 'asc'
+            $sortBy = $request->input('sort_by', 'created_at');
+            $sortOrder = $request->input('sort_order', 'desc');
 
             $query = Category::query();
-            $items = Category::paginate($perPage);
+
+            // Apply keyword filtering if provided
+            if ($request->filled('keyword')) {
+                $keyword = $request->input('keyword');
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('name', 'like', '%' . $keyword . '%')
+                        ->orWhere('description', 'like', '%' . $keyword . '%');
+                });
+            }
+
+            // Apply sorting
             $query->orderBy($sortBy, $sortOrder);
+
+            // Paginate the results
             $items = $query->paginate($perPage);
 
 
