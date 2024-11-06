@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\ColorController;
+use App\Http\Controllers\API\Admin\SizeController;
 use App\Http\Controllers\API\Admin\SubcategoryController;
 use App\Http\Controllers\API\Admin\SwitchActiveStatusController;
 use App\Http\Controllers\Auth\ProfileController;
@@ -36,7 +37,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     // Super Admin & Admin Accessible Routes 
-    Route::middleware([CheckSuperadminOrAdmin::class])->group(function () {
+    Route::prefix('admin')->middleware([CheckSuperadminOrAdmin::class])->group(function () {
         Route::controller(CategoryController::class)->group(function () {
             Route::post('/category', 'store');
             Route::get('/category', 'index');
@@ -62,6 +63,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/color/{id}', 'show');
             Route::post('/color/{id}', 'update');
             Route::delete('/color/{id}', 'destroy');
+        });
+        Route::controller(SizeController::class)->group(function () {
+            Route::post('/size', 'store');
+            Route::get('/size', 'index');
+            Route::get('/size/{id}', 'show');
+            Route::post('/size/{id}', 'update');
+            Route::delete('/size/{id}', 'destroy');
         });
         Route::post('/toggle-status/{modelName}/{id}', [SwitchActiveStatusController::class, 'toggleStatus']);
     });
