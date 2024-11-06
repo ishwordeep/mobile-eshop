@@ -7,6 +7,11 @@ use App\Http\Resources\ColorResource;
 use App\Models\Color;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Str;
+
+
+use Illuminate\Support\Facades\DB;
 
 class ColorController extends Controller
 {
@@ -61,7 +66,32 @@ class ColorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = [
+                'name' => $request->name,
+                'hex_code' => $request->hex_code,
+                'is_active' => $request->is_active ?? true,
+            ];
+
+
+            $color = Color::create($data);
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Color created successfully',
+                'data' => new ColorResource($color),
+                'statusCode' => Response::HTTP_CREATED,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'Color creation failed',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**
@@ -69,7 +99,29 @@ class ColorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $color = Color::findOrFail($id);
+
+            return apiResponse([
+                'status' => true,
+                'message' => 'Color retrieved successfully',
+                'data' => new ColorResource($color),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            // If color not found, return 404
+            return apiResponse([
+                'status' => false,
+                'message' => 'Color not found',
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving the color',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**
@@ -77,7 +129,38 @@ class ColorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $color = Color::findOrFail($id);
+
+            $data = $request->only(['name', 'is_active','hex_code']);
+
+          
+
+            // Update the color with the provided data
+            $color->update($data);
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Color updated successfully',
+                'data' => new ColorResource($color),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'Color not found',
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while updating the color',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**
@@ -85,6 +168,36 @@ class ColorController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $color = Color::findOrFail($id);
+            $color->update(['is_active' => false]);
+
+            $color->delete();
+            DB::commit();
+
+            // Return success response
+            return apiResponse([
+                'status' => true,
+                'message' => 'Color deleted successfully',
+            ]);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            // If color not found, return 404
+            return apiResponse([
+                'status' => false,
+                'message' => 'Color not found',
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            // For any other exception, return internal server error
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while deleting the color',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 }
