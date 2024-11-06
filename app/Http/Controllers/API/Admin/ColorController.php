@@ -8,9 +8,6 @@ use App\Models\Color;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Str;
-
-
 use Illuminate\Support\Facades\DB;
 
 class ColorController extends Controller
@@ -70,7 +67,7 @@ class ColorController extends Controller
         try {
             $data = [
                 'name' => $request->name,
-                'hex_code' => $request->hex_code,
+                'hex_value' => $request->hex_value,
                 'is_active' => $request->is_active ?? true,
             ];
 
@@ -133,7 +130,7 @@ class ColorController extends Controller
         try {
             $color = Color::findOrFail($id);
 
-            $data = $request->only(['name', 'is_active','hex_code']);
+            $data = $request->only(['name', 'is_active','hex_value']);
 
           
 
