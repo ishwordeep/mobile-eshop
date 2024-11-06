@@ -36,7 +36,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     // Super Admin & Admin Accessible Routes 
-    Route::prefix('admin')->middleware([CheckSuperadminOrAdmin::class])->group(function () {
+    Route::middleware([CheckSuperadminOrAdmin::class])->group(function () {
         Route::controller(CategoryController::class)->group(function () {
             Route::post('/category', 'store');
             Route::get('/category', 'index');
