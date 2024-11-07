@@ -90,6 +90,36 @@ class LiveDataSeeder extends Seeder
         // Bulk insert brands
         DB::table('brands')->insert($brands);
 
+        // producvts
+        $products = [
+            ['name'=> 'Mobile SAmsung', 'slug'=> Str::slug('mobile-samsung'), 'category_id'=> 1, 'subcategory_id'=> 1, 'brand_id'=> 2, 'price'=> 1000, 'is_active'=> true],
+            ['name'=> 'Mobile Apple', 'slug'=> Str::slug('mobile-apple'), 'category_id'=> 1, 'subcategory_id'=> 1, 'brand_id'=> 1, 'price'=> 1200, 'is_active'=> true],
+            ['name'=> 'Mobile Nokia', 'slug'=> Str::slug('mobile-nokia'), 'category_id'=> 1, 'subcategory_id'=> 1, 'brand_id'=> 5, 'price'=> 800, 'is_active'=> true],
+            ['name'=> 'Laptop Dell', 'slug'=> Str::slug('laptop-dell'), 'category_id'=> 1, 'subcategory_id'=> 2, 'brand_id'=> 7, 'price'=> 1500, 'is_active'=> true],
+            ['name'=> 'Laptop HP', 'slug'=> Str::slug('laptop-hp'), 'category_id'=> 1, 'subcategory_id'=> 2, 'brand_id'=> 8, 'price'=> 1300, 'is_active'=> true],
+            ['name'=> 'Laptop Lenovo', 'slug'=> Str::slug('laptop-lenovo'), 'category_id'=> 1, 'subcategory_id'=> 2, 'brand_id'=> 9, 'price'=> 1400, 'is_active'=> true],
+            ['name'=> 'Camera Sony', 'slug'=> Str::slug('camera-sony'), 'category_id'=> 1, 'subcategory_id'=> 3, 'brand_id'=> 3, 'price'=> 900, 'is_active'=> true],
+            ['name'=> 'Camera Nikon', 'slug'=> Str::slug('camera-nikon'), 'category_id'=> 1, 'subcategory_id'=> 3, 'brand_id'=> 5, 'price'=> 800, 'is_active'=> true],
+            ['name'=> 'Camera Canon', 'slug'=> Str::slug('camera-canon'), 'category_id'=> 1, 'subcategory_id'=> 3, 'brand_id'=> 5, 'price'=> 850, 'is_active'=> true],
+            ['name'=> 'Men\'s Shirt', 'slug'=> Str::slug('mens-shirt'), 'category_id'=> 1, 'subcategory_id'=> 4, '  brand_id'=> 1, 'price'=> 50, 'is_active'=> true],
+            ['name'=> 'Men\'s Trousers', 'slug'=> Str::slug('mens-trousers'), 'category_id'=> 1, 'subcategory_id'=> 4, '  brand_id'=> 1, 'price'=> 60, 'is_active'=> true],
+            ['name'=> 'Men\'s Shoes', 'slug'=> Str::slug('mens-shoes'), 'category_id'=> 1, 'subcategory_id'=> 4, '  brand_id'=> 1, 'price'=> 70, 'is_active'=> true],
+            ['name'=> 'Women\'s Dress', 'slug'=> Str::slug('womens-dress'), 'category_id'=> 1, 'subcategory_id'=> 5, '  brand_id'=> 1, 'price'=> 80, 'is_active'=> true],
+            ['name'=> 'Women\'s Skirt', 'slug'=> Str::slug('womens-skirt'), 'category_id'=> 1, 'subcategory_id'=> 5, '  brand_id'=> 1, 'price'=> 70, 'is_active'=> true],
+            ['name'=> 'Women\'s Shoes', 'slug'=> Str::slug('womens-shoes'), 'category_id'=> 1, 'subcategory_id'=> 5, '  brand_id'=> 1, 'price'=> 90, 'is_active'=> true],
+            ['name'=> 'Sofa Set', 'slug'=> Str::slug('sofa-set'), 'category_id'=> 1, 'subcategory_id'=> 6, '  brand_id'=> 1, 'price'=> 500, 'is_active'=> true],
+            ['name'=> 'Office Chair', 'slug'=> Str::slug('office-chair'), 'category_id'=> 1, 'subcategory_id'=> 6, '  brand_id'=> 1, 'price'=> 200, 'is_active'=> true],
+            ['name'=> 'Book Fiction', 'slug'=> Str::slug('book-fiction'), 'category_id'=> 1, 'subcategory_id'=> 7, '  brand_id'=> 1, 'price'=> 20, 'is_active'=> true],
+            ['name'=> 'Book Non-fiction', 'slug'=> Str::slug('book-non-fiction'), 'category_id'=> 1, 'subcategory_id'=> 7, '  brand_id'=> 1, 'price'=> 25, 'is_active'=> true],
+            ['name'=> 'Action Figure Superman', 'slug'=> Str::slug('action-figure-superman'), 'category_id'=> 1, 'subcategory_id'=> 8, '  brand_id'=> 1, 'price'=> 10, 'is_active'=> true],
+            ['name'=> 'Action Figure Batman', 'slug'=> Str::slug('action-figure-batman'), 'category_id'=> 1, 'subcategory_id'=> 8, '  brand_id'=> 1, 'price'=> 10, 'is_active'=> true],
+            ['name'=> 'Board Game Chess', 'slug'=> Str::slug('board-game-chess'), 'category_id'=> 1, 'subcategory_id'=> 9, '  brand_id'=> 1, 'price'=> 15, 'is_active'=> true],
+            ['name'=> 'Board Game Ludo', 'slug'=> Str::slug('board-game-ludo'), 'category_id'=> 1, 'subcategory_id'=> 9, '  brand_id'=> 1, 'price'=> 10, 'is_active'=> true],
+        ];
+
+        // Bulk insert products
+        DB::table('products')->insert($products);
+
         $specificationHeaders = [
             ['id' => 1, 'name' => 'Dimensions'],
             ['id' => 2, 'name' => 'Weight'],
