@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Admin\BrandController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\ColorController;
+use App\Http\Controllers\API\Admin\DeliveryChargeController;
 use App\Http\Controllers\API\Admin\ProductController;
 use App\Http\Controllers\API\Admin\ProductSpecificationController;
 use App\Http\Controllers\API\Admin\SettingController;
@@ -107,6 +108,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/specification/{id}', 'show');
             Route::post('/specification/{id}', 'update');
             Route::delete('/specification/{id}', 'destroy');
+        });
+        Route::controller(DeliveryChargeController::class)->group(function () {
+            Route::post('/delivery-charge', 'store');
+            Route::get('/delivery-charge', 'index');
+            Route::get('/delivery-charge/{id}', 'show');
+            Route::post('/delivery-charge/{id}', 'update');
+            Route::delete('/delivery-charge/{id}', 'destroy');
         });
         Route::post('/toggle-status/{modelName}/{id}', [SwitchActiveStatusController::class, 'toggleStatus']);
     });

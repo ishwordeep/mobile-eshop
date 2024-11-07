@@ -116,12 +116,12 @@ return new class extends Migration
         //     $table->timestamps();
         // });
 
-        // Schema::create('delivery_charges', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('address');
-        //     $table->decimal('charge', 10, 2);
-        //     $table->timestamps();
-        // });
+        Schema::create('delivery_charges', function (Blueprint $table) {
+            $table->id();
+            $table->string('address');
+            $table->decimal('charge', 10, 2);
+            $table->timestamps();
+        });
 
         // Schema::create('repair_details', function (Blueprint $table) {
         //     $table->id();
