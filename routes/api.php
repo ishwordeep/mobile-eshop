@@ -98,9 +98,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(ProductSpecificationController::class)->group(function () {
             Route::post('/specification', 'store');
             Route::get('/specification', 'index');
-            // Route::get('/product/{id}', 'show');
-            // Route::post('/product/{id}', 'update');
-            // Route::delete('/product/{id}', 'destroy');
+            Route::get('/specification/{id}', 'show');
+            Route::post('/specification/{id}', 'update');
+            Route::delete('/specification/{id}', 'destroy');
         });
         Route::post('/toggle-status/{modelName}/{id}', [SwitchActiveStatusController::class, 'toggleStatus']);
     });
