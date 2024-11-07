@@ -64,7 +64,7 @@ class ProductSpecificationController extends Controller
         DB::beginTransaction();
         try {
             $header = ProductSpecificationHeader::create([
-                'name' => $request->input('name'),
+                'name' => $request->input('header'),
             ]);
 
             if ($request->filled('subheaders')) {

@@ -16,7 +16,7 @@ class ProductSpecificationHeaderResource extends JsonResource
     {
         return [
             'id' => $this->id, // The header's ID
-            'name' => $this->name, // The header's name
+            'header' => $this->name, // The header's name
             'subheaders' => ProductSpecificationSubheaderResource::collection($this->whenLoaded('subheaders')), // Eager-loaded subheaders
         ];
     }
