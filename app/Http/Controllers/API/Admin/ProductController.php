@@ -7,6 +7,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductColor;
 use App\Models\ProductColorImage;
+use App\Models\ProductImage;
 use App\Models\ProductSpecificationDetail;
 use App\Models\ProductVariant;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -150,6 +151,12 @@ class ProductController extends Controller
                     $product->productImages()->create([
                         'image' => storeImage($image, 'products'),
                     ]);
+                }
+            }
+
+            if ($request->has('deleted_images')) {
+                foreach ($request->deleted_images as $imageId) {
+                    ProductImage::where('id', $imageId)->delete();
                 }
             }
             DB::commit();
