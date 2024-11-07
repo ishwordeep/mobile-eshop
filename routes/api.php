@@ -4,6 +4,7 @@ use App\Http\Controllers\API\Admin\BrandController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\ColorController;
 use App\Http\Controllers\API\Admin\DeliveryChargeController;
+use App\Http\Controllers\API\Admin\ProductComboController;
 use App\Http\Controllers\API\Admin\ProductController;
 use App\Http\Controllers\API\Admin\ProductSpecificationController;
 use App\Http\Controllers\API\Admin\SettingController;
@@ -115,6 +116,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('/delivery-charge/{id}', 'show');
             Route::post('/delivery-charge/{id}', 'update');
             Route::delete('/delivery-charge/{id}', 'destroy');
+        });
+        Route::controller(ProductComboController::class)->group(function () {
+            Route::post('/combo', 'store');
+            Route::get('/combo', 'index');
+            Route::get('/combo/{id}', 'show');
+            Route::post('/combo/{id}', 'update');
+            Route::delete('/combo/{id}', 'destroy');
         });
         Route::post('/toggle-status/{modelName}/{id}', [SwitchActiveStatusController::class, 'toggleStatus']);
     });

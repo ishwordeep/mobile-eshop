@@ -101,20 +101,20 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Schema::create('product_combos', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->string('name');
-        //     $table->decimal('price', 10, 2);
-        //     $table->string('image')->nullable();
-        //     $table->timestamps();
-        // });
+        Schema::create('product_combos', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->decimal('price', 10, 2);
+            $table->string('image')->nullable();
+            $table->timestamps();
+        });
 
-        // Schema::create('product_combo_items', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignId('product_combo_id')->constrained('product_combos')->onDelete('cascade');
-        //     $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
-        //     $table->timestamps();
-        // });
+        Schema::create('product_combo_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_combo_id')->constrained('product_combos')->onDelete('cascade');
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->timestamps();
+        });
 
         Schema::create('delivery_charges', function (Blueprint $table) {
             $table->id();
