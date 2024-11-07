@@ -102,11 +102,11 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'category_id' => $request->category_id,
                 'subcategory_id' => $request->subcategory_id,
-                'stock_threshold_qty'=> $request->low_stock_threshold  ,
+                'stock_threshold_qty' => $request->low_stock_threshold,
                 'brand_id' => $request->brand_id,
                 'price' => $request->price,
                 'discount' => $request->discount_percentage,
-                'available_qty' => $request->available_qty,
+                'available_qty' => $request->stock,
                 'video' => $request->video,
                 'is_active' => $request->is_active ?? true,
             ];
@@ -125,6 +125,9 @@ class ProductController extends Controller
             }
 
             DB::commit();
+            $product->load('category');
+            $product->load('subcategory');
+            $product->load('tags');
             return apiResponse([
                 'status' => true,
                 'message' => 'Product created successfully',

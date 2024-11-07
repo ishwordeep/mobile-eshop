@@ -23,9 +23,8 @@ class ProductResource extends JsonResource
             'image' => $this->image,
             'brand' => new BrandResource($this->whenLoaded('brand')),
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'tag' => new ProductTag($this->whenLoaded('tags')),
             'is_active' => $this->is_active,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ];
     }
 }
