@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\API\Admin\BrandController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\ColorController;
 use App\Http\Controllers\API\Admin\SettingController;
@@ -57,6 +58,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::post('/subcategory/{id}', 'update');
             Route::delete('/subcategory/{id}', 'destroy');
             Route::post('/subcategory/{id}/restore', 'restore');
+        });
+        Route::controller(BrandController::class)->group(function () {
+            Route::post('/brand', 'store');
+            Route::get('/brand', 'index');
+            Route::get('/brand/get-list', 'getBrandList');
+            Route::get('/brand/{id}', 'show');
+            Route::post('/brand/{id}', 'update');
+            Route::delete('/brand/{id}', 'destroy');
         });
         Route::controller(ColorController::class)->group(function () {
             Route::post('/color', 'store');

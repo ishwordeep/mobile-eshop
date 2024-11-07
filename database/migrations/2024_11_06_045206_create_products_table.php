@@ -11,28 +11,28 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('products', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('category_id')->nullable();
-        //     $table->unsignedBigInteger('subcategory_id')->nullable();
-        //     $table->string('name')->nullable();
-        //     $table->decimal('price', 9, 3)->nullable();
-        //     $table->text('description')->nullable();
-        //     $table->string('available_qty')->nullable();
-        //     $table->string('image')->nullable();
-        //     $table->unsignedBigInteger('brand_id')->nullable();
-        //     $table->string('video')->nullable();
-        //     $table->boolean('is_new')->default(false);
-        //     $table->boolean('is_featured')->default(false);
-        //     $table->integer('discount')->nullable()->after('price');
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('subcategory_id')->nullable();
+            $table->string('name')->nullable();
+            $table->decimal('price', 9, 3)->nullable();
+            $table->text('description')->nullable();
+            $table->string('available_qty')->nullable();
+            $table->string('image')->nullable();
+            $table->unsignedBigInteger('brand_id')->nullable();
+            $table->string('video')->nullable();
+            $table->boolean('is_new')->default(false);
+            $table->boolean('is_featured')->default(false);
+            $table->integer('discount')->nullable()->after('price');
 
-        //     $table->boolean('is_active')->default(true);
-        //     $table->timestamps();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
 
-        //     $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
-        //     $table->foreign('subcategory_id')->references('id')->on('subcategories')->onUpdate('cascade')->onDelete('cascade');
-        //     $table->foreign('brand_id')->references('id')->on('brands')->onUpdate('cascade')->onDelete('cascade');
-        // });
+            $table->foreign('category_id')->references('id')->on('categories')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('subcategory_id')->references('id')->on('subcategories')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands')->onUpdate('cascade')->onDelete('cascade');
+        });
 
         // Schema::create('product_specifications_header', function (Blueprint $table) {
         //     $table->id();
