@@ -349,7 +349,7 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->get('keyword');
         $products = Product::select('id', 'name')
             ->where('is_active', true)
             ->when($search, function ($query, $search) {
