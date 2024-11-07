@@ -12,7 +12,7 @@ class ProductSpecificationHeader extends Model
 
     public function subheaders()
     {
-        return $this->hasMany(ProductSpecificationSubheader::class);
+        return $this->hasMany(ProductSpecificationSubheader::class,"header_id");
     }
 
     public function details()

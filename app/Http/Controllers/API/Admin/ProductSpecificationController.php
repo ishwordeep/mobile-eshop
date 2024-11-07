@@ -79,6 +79,9 @@ class ProductSpecificationController extends Controller
 
             DB::commit();
 
+            // load subheaders/
+            $header->load('subheaders');
+
             return apiResponse([
                 'success' => true,
                 'message' => 'Product Specification created successfully',
