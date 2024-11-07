@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,7 +25,7 @@ class ProductResource extends JsonResource
             'brand' => new BrandResource($this->whenLoaded('brand')),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'subcategory' => new SubCategoryResource($this->whenLoaded('subcategory')),
-            'tag' => new ProductTag($this->whenLoaded('tags')),
+            'tag' => ProductTag::collection($this->whenLoaded('tags')),
             'is_active' => $this->is_active,
         ];
     }

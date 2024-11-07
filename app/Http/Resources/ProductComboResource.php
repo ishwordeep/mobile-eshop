@@ -19,6 +19,7 @@ class ProductComboResource extends JsonResource
             'name' => $this->name,
             'price' => $this->price,
             'image' => $this->image,
+            'is_active' => $this->is_active,
             'products' => ProductComboItemResource::collection($this->whenLoaded('products')),
         ];
     }

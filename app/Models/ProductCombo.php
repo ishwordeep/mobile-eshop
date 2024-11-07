@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductCombo extends Model
 {
-    protected $fillable = ['name', 'price', 'image'];
+    protected $fillable = ['name', 'price', 'image','is_active'];
 
     public function products()
     {

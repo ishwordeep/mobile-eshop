@@ -12,8 +12,8 @@ class ProductTag extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray(Request $request): string
     {
-        return parent::toArray($request);
+        return $this->tag;
     }
 }

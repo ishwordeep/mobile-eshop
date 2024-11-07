@@ -350,21 +350,48 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $search = $request->get('keyword');
-        $products = Product::select('id', 'name')
+        $items = Product::select('id', 'name')
             ->where('is_active', true)
-            ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', '%' . $search . '%');
-            })
+            ->where('name', 'like', '%' . $search . '%')
             ->get();
+
         return apiResponse([
             'status' => true,
             'message' => 'Products retrieved successfully',
             'data' => [
-                'status' => true,
-                'rows' => ProductResource::collection($products),
+                'count' => $items->count(),
+                'rows' => ProductResource::collection($items),
                 'message' => 'Products retrieved successfully',
 
             ]
         ]);
+    }
+
+    // get products by category
+    public function getProductsByCategory(Request $request)
+    {
+        try {
+            $category_id = $request->get('category_id');
+            $items = Product::where('category_id', $category_id)
+                ->where('is_active', true)
+                ->get();
+
+            return apiResponse([
+                'status' => true,
+                'message' => 'Products retrieved successfully',
+                'data' => [
+                    'count' => $items->count(),
+                    'rows' => ProductResource::collection($items),
+                    'message' => 'Products retrieved successfully',
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving products',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 }

@@ -70,6 +70,7 @@ class ProductComboController extends Controller
             $data = [
                 'name' => $request->name,
                 'price' => $request->price,
+                'is_active' => $request->is_active??true,
             ];
 
             if ($request->hasFile('image')) {
@@ -145,7 +146,7 @@ class ProductComboController extends Controller
         DB::beginTransaction();
         try {
             $item = ProductCombo::finfOrFail($id);
-            $data = $request->only(['name', 'price']);
+            $data = $request->only(['name', 'price','is_active']);
 
             if ($request->hasFile('image')) {
                 $data['image'] = storeImage($request->file('image'), 'combo'); // Update with new image
