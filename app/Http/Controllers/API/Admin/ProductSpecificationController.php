@@ -138,9 +138,9 @@ class ProductSpecificationController extends Controller
         try {
             $header = ProductSpecificationHeader::findOrFail($id);
 
-            $header->update([
-                'name' => $request->input('header'),
-            ]);
+            $data=$request->only(['header']);
+
+            $header->update($data);
 
             if ($request->filled('subheaders')) {
                 $subheaders = $request->input('subheaders');
