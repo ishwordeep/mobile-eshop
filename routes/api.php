@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\Admin\BrandController;
 use App\Http\Controllers\API\Admin\CategoryController;
 use App\Http\Controllers\API\Admin\ColorController;
+use App\Http\Controllers\API\Admin\ProductController;
 use App\Http\Controllers\API\Admin\SettingController;
 use App\Http\Controllers\API\Admin\SizeController;
 use App\Http\Controllers\API\Admin\SubcategoryController;
@@ -84,6 +85,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::controller(SettingController::class)->group(function () {
             Route::get('/setting', 'index');
             Route::post('/setting', 'update');
+        });
+
+        Route::controller(ProductController::class)->group(function () {
+            Route::post('/product', 'store');
+            Route::get('/product', 'index');
+            Route::get('/product/{id}', 'show');
+            Route::post('/product/{id}', 'update');
+            Route::delete('/product/{id}', 'destroy');
         });
         Route::post('/toggle-status/{modelName}/{id}', [SwitchActiveStatusController::class, 'toggleStatus']);
     });
