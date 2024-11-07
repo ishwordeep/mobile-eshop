@@ -368,13 +368,22 @@ class ProductController extends Controller
     }
 
     // get products by category
-    public function getProductsByCategory(Request $request)
+    public function getProductList(Request $request)
     {
         try {
             $category_id = $request->get('category_id');
-            $items = Product::where('category_id', $category_id)
-                ->where('is_active', true)
-                ->get();
+            $keyword = $request->get('keyword');
+
+            $query = Product::where('is_active', true);
+
+            if ($category_id) {
+                $query->where('category_id', $category_id);
+            } elseif ($keyword) {
+                $query->where('name', 'like', '%' . $keyword . '%');
+            }
+
+            $items = $query->get();
+
 
             return apiResponse([
                 'status' => true,
