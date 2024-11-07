@@ -102,6 +102,7 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'category_id' => $request->category_id,
                 'subcategory_id' => $request->subcategory_id,
+                'stock_threshold_qty'=> $request->stock_threshold_qty,
                 'brand_id' => $request->brand_id,
                 'price' => $request->price,
                 'discount' => $request->discount_percentage,

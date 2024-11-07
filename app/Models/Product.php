@@ -19,6 +19,7 @@ class Product extends Model
         "discount",
         "is_new",
         "is_featured",
+        "stock_threshold_qty",
         "is_active",
     ];
     public function category()

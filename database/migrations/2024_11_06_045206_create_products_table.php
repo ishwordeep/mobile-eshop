@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('price', 10, 3)->nullable();
             $table->text('description')->nullable();
             $table->unsignedInteger('available_qty')->nullable();
+            $table->unsignedInteger('stock_threshold_qty')->nullable();
             $table->string('image')->nullable();
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->string('video')->nullable();
