@@ -7,6 +7,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSpecificationHeaderResource;
 use App\Models\ProductSpecificationHeader;
 use App\Models\ProductSpecificationSubheader;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -103,16 +104,97 @@ class ProductSpecificationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $item = ProductSpecificationHeader::with('subheaders')->findOrFail($id);
+            return apiResponse([
+                'success' => true,
+                'message' => 'Product Specification retrieved successfully',
+                'data' => new ProductSpecificationHeaderResource($item),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return apiResponse([
+                'success' => false,
+                'message' => 'Product Specification not found',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'success' => false,
+                'message' => 'An error occurred while retrieving product specification',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        // DB::beginTransaction();
+        // try {
+        //     $header = ProductSpecificationHeader::findOrFail($id);
+    
+        //     $header->update([
+        //         'name' => $request->input('header'),
+        //     ]);
+    
+        //     if ($request->filled('subheaders')) {
+        //         $subheaders = $request->input('subheaders');
+                
+        //         $existingSubheaderIds = $header->subheaders->pluck('id')->toArray();
+    
+        //         // Array to store the IDs of the subheaders provided in the request
+        //         $updatedSubheaderIds = [];
+    
+        //         // Iterate through each subheader in the request
+        //         foreach ($subheaders as $subheader) {
+        //             if (isset($subheader['id'])) {
+        //                 // Update existing subheader
+        //                 $subheaderModel = ProductSpecificationSubheader::find($subheader['id']);
+        //                 if ($subheaderModel) {
+        //                     $subheaderModel->update(['name' => $subheader['name']]);
+        //                     $updatedSubheaderIds[] = $subheader['id'];
+        //                 }
+        //             } else {
+        //                 // Create new subheader if it doesn't have an ID
+        //                 $newSubheader = ProductSpecificationSubheader::create([
+        //                     'header_id' => $header->id,
+        //                     'name' => $subheader['name'],
+        //                 ]);
+        //                 $updatedSubheaderIds[] = $newSubheader->id;
+        //             }
+        //         }
+    
+        //         // Delete subheaders that were not included in the request
+        //         $subheadersToDelete = array_diff($existingSubheaderIds, $updatedSubheaderIds);
+        //         ProductSpecificationSubheader::whereIn('id', $subheadersToDelete)->delete();
+        //     }
+    
+        //     DB::commit();
+    
+        //     // Load updated subheaders
+        //     $header->load('subheaders');
+    
+        //     return apiResponse([
+        //         'success' => true,
+        //         'message' => 'Product Specification updated successfully',
+        //         'data' => new ProductSpecificationHeaderResource($header),
+        //     ]);
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     return apiResponse([
+        //         'success' => false,
+        //         'message' => 'An error occurred while updating product specification',
+        //         'errors' => $e->getMessage(),
+        //         'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+        //     ]);
+        // }
     }
+    
 
     /**
      * Remove the specified resource from storage.
