@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSpecificationHeaderResource;
 use App\Models\ProductSpecificationHeader;
+use App\Models\ProductSpecificationSubheader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,7 @@ class ProductSpecificationController extends Controller
             $sortOrder = $request->input("sort_order", "desc");
 
             $query = ProductSpecificationHeader::query();
-            $query->with('subheaders'); 
+            $query->with('subheaders');
 
             if ($request->filled('keyword')) {
                 $keyword = $request->input('keyword');
@@ -69,8 +70,9 @@ class ProductSpecificationController extends Controller
             if ($request->filled('subheaders')) {
                 $subheaders = $request->input('subheaders');
                 foreach ($subheaders as $subheader) {
-                    $header->subheaders()->create([
-                        'name' => $subheader['name'],
+                    ProductSpecificationSubheader::create([
+                        'header_id' => $header->id,
+                        'name' => $subheader,
                     ]);
                 }
             }
