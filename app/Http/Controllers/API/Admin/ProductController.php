@@ -32,6 +32,8 @@ class ProductController extends Controller
             // Start the query for the Product model
             $query = Product::query();
 
+            $query->with(['category', 'subcategory', 'brand', 'tags']);
+
             // Apply keyword filtering if provided
             if ($request->filled('keyword')) {
                 $keyword = $request->input('keyword');
@@ -343,5 +345,26 @@ class ProductController extends Controller
                 'errors' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $search = $request->get('search');
+        $products = Product::select('id', 'name')
+            ->where('is_active', true)
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', '%' . $search . '%');
+            })
+            ->get();
+        return apiResponse([
+            'status' => true,
+            'message' => 'Products retrieved successfully',
+            'data' => [
+                'status' => true,
+                'rows' => ProductResource::collection($products),
+                'message' => 'Products retrieved successfully',
+
+            ]
+        ]);
     }
 }
