@@ -113,15 +113,6 @@ class ProductController extends Controller
             }
             $product = Product::create($data);
 
-            // PRODUCT_IMAGES
-            if ($request->has('images')) {
-                foreach ($request->images as $image) {
-                    $product->productImages()->create([
-                        'image' => storeImage($image, 'products'),
-                    ]);
-                }
-            }
-
             // PRODUCT_TAGS
             if ($request->has('tags')) {
                 foreach ($request->tags as $tag) {
@@ -131,7 +122,66 @@ class ProductController extends Controller
                 }
             }
 
-            // PRODUCT_SPECIFICATIONS
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product created successfully',
+                'data' => new ProductResource($product),
+                'statusCode' => Response::HTTP_CREATED,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while creating product',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    public function storeProductImage(Request $request, string $id)
+    {
+        DB::beginTransaction();
+        try {
+            $product = Product::findOrFail($id);
+            if ($request->has('images')) {
+                foreach ($request->images as $image) {
+                    $product->productImages()->create([
+                        'image' => storeImage($image, 'products'),
+                    ]);
+                }
+            }
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product image added successfully',
+                'data' => new ProductResource($product),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'Product not found',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while adding product image',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    public function storeSpecification(Request $request, string $id)
+    {
+        DB::beginTransaction();
+        try {
+            $product = Product::findOrFail($id);
             if ($request->has('specifications')) {
                 foreach ($request->specifications as $specification) {
                     ProductSpecificationDetail::create([
@@ -142,52 +192,64 @@ class ProductController extends Controller
                     ]);
                 }
             }
-
-            // PRODUCT_VARIANTS
-            if ($request->has('variants')) {
-                foreach ($request->variants as $variant) {
-                    $variant=ProductVariant::create([
-                        'product_id' => $product->id,
-                        'name' => $variant['name'],
-                        'price' => $variant['price'],
-                    ]);
-
-                    // PRODUCT_COLORS
-                    if (isset($variant['colors'])) {
-                        foreach ($variant['colors'] as $color) {
-                            $productColor=ProductColor::create([
-                                'product_id' => $product->id,
-                                'variant_id' => $variant->id,
-                                'color_id' => $color,
-                            ]);
-
-                            // PRODUCT_COLOR_IMAGES
-                            if (isset($color['images'])) {
-                                foreach ($color['images'] as $image) {
-                                    ProductColorImage::create([
-                                        'product_color_id' => $color['id'],
-                                        'image' => storeImage($image, 'product-colors'),
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                DB::commit();
-                return apiResponse([
-                    'status' => true,
-                    'message' => 'Product created successfully',
-                    'data' => new ProductResource($product),
-                    'statusCode' => Response::HTTP_CREATED,
-                ]);
-            }
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product specification added successfully',
+                'data' => new ProductResource($product),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'Product not found',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return apiResponse([
                 'status' => false,
-                'message' => 'An error occurred while creating product',
+                'message' => 'An error occurred while adding product specification',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    public function storeVariant(Request $request, string $id)
+    {
+        DB::beginTransaction();
+        try {
+            $product = Product::findOrFail($id);
+            if ($request->has('variants')) {
+                foreach ($request->variants as $variant) {
+                    $variant = ProductVariant::create([
+                        'product_id' => $product->id,
+                        'name' => $variant['name'],
+                        'price' => $variant['price'],
+                    ]);
+                }
+            }
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product variant added successfully',
+                'data' => new ProductResource($product),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'Product not found',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while adding product variant',
                 'errors' => $e->getMessage(),
                 'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ]);
