@@ -275,6 +275,15 @@ class CategoryController extends Controller
         try {
             $items = Category::select('name', 'id')->where('is_active', true)->get();
 
+            // check if the category list is empty
+            if($items->isEmpty()) {
+                return apiResponse([
+                    'status' => false,
+                    'message' => 'No categories found',
+                    'statusCode' => Response::HTTP_NOT_FOUND,
+                ]);
+            }
+
             return apiResponse([
                 'status' => true,
                 'message' => 'Categories retrieved successfully',

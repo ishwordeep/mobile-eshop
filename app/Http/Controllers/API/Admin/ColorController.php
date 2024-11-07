@@ -41,7 +41,7 @@ class ColorController extends Controller
 
             return apiResponse([
                 'status' => true,
-                'message' => 'Categories retrieved successfully',
+                'message' => 'Color retrieved successfully',
                 'data' => [
                     'count' => $items->count(),
                     'rows' => ColorResource::collection($items),
@@ -51,7 +51,7 @@ class ColorController extends Controller
         } catch (\Exception $e) {
             return apiResponse([
                 'status' => false,
-                'message' => 'An error occurred while retrieving categories',
+                'message' => 'An error occurred while retrieving color',
                 'errors' => $e->getMessage(),
                 'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ]);
@@ -197,4 +197,36 @@ class ColorController extends Controller
             ]);
         }
     }
+
+    public function getColorList(){
+        try {
+            $items = Color::select('name', 'id')->where('is_active', true)->get();
+
+            // check if the category list is empty
+            if($items->isEmpty()) {
+                return apiResponse([
+                    'status' => false,
+                    'message' => 'No color found',
+                    'statusCode' => Response::HTTP_NOT_FOUND,
+                ]);
+            }
+
+            return apiResponse([
+                'status' => true,
+                'message' => 'Color retrieved successfully',
+                'data' => [
+                    'count' => $items->count(),
+                    'rows' => ColorResource::collection($items),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving color',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+    
 }

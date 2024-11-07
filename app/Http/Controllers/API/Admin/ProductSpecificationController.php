@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductSpecificationHeaderResource;
+use App\Http\Resources\ProductSpecificationSubheaderResource;
 use App\Models\ProductSpecificationHeader;
 use App\Models\ProductSpecificationSubheader;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -138,7 +139,7 @@ class ProductSpecificationController extends Controller
         try {
             $header = ProductSpecificationHeader::findOrFail($id);
 
-            $data=$request->only(['header']);
+            $data = $request->only(['header']);
 
             $header->update($data);
 
@@ -210,6 +211,70 @@ class ProductSpecificationController extends Controller
             return apiResponse([
                 'success' => false,
                 'message' => 'An error occurred while deleting product specification',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    public function getHeaderList()
+    {
+        try {
+            $items = ProductSpecificationHeader::select('name', 'id')->get();
+
+            // check if the category list is empty
+            if ($items->isEmpty()) {
+                return apiResponse([
+                    'status' => false,
+                    'message' => 'No headers found',
+                    'statusCode' => Response::HTTP_NOT_FOUND,
+                ]);
+            }
+
+            return apiResponse([
+                'status' => true,
+                'message' => 'Headers retrieved successfully',
+                'data' => [
+                    'count' => $items->count(),
+                    'rows' => ProductSpecificationHeaderResource::collection($items),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving headers',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
+    }
+
+    public function getSubHeaderList($header_id)
+    {
+        try {
+            $items = ProductSpecificationSubHeader::select('name', 'id')
+                ->where('header_id', $header_id)
+                ->get();
+
+            if ($items->isEmpty()) {
+                return apiResponse([
+                    'status' => false,
+                    'message' => 'No subheaders found',
+                    'statusCode' => Response::HTTP_NOT_FOUND,
+                ]);
+            }
+            return apiResponse([
+                'status' => true,
+                'message' => 'Subheaders retrieved successfully',
+                'data' => [
+                    'count' => $items->count(),
+                    'rows' => ProductSpecificationSubheaderResource::collection($items),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving subheaders',
                 'errors' => $e->getMessage(),
                 'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
             ]);

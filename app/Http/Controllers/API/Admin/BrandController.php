@@ -275,6 +275,14 @@ class BrandController extends Controller
         try {
             $items = Brand::select('name', 'id')->where('is_active', true)->get();
 
+            if ($items->isEmpty()) {
+                return apiResponse([
+                    'status' => false,
+                    'message' => 'No brand found',
+                    'statusCode' => Response::HTTP_NOT_FOUND,
+                ]);
+            }
+
             return apiResponse([
                 'status' => true,
                 'message' => 'Categories retrieved successfully',

@@ -273,4 +273,37 @@ class SubcategoryController extends Controller
             ]);
         }
     }
+    public function getSubcategoryList($category_id)
+    {
+        try {
+            // Fetch subcategories by category_id and active status
+            $items = Subcategory::select('id', 'name')
+            ->where('category_id', $category_id)
+            ->where('is_active', true)
+            ->get();
+
+            // Check if subcategories exist
+            if ($items->isEmpty()) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'No subcategories found for the selected category.',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Subcategories retrieved successfully.',
+                'data' => [
+                    'count' => $items->count(),
+                    'rows' => SubCategoryResource::collection($items), // Optionally use resources
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while retrieving subcategories',
+                'errors' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
