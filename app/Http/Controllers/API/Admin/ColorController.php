@@ -200,7 +200,7 @@ class ColorController extends Controller
 
     public function getColorList(){
         try {
-            $items = Color::select('hex_value', 'id')->where('is_active', true)->get();
+            $items = Color::select('hex_value', 'id','name')->where('is_active', true)->get();
 
             // check if the category list is empty
             if($items->isEmpty()) {

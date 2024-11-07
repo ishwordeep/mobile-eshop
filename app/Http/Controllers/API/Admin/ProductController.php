@@ -5,6 +5,11 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\ProductColor;
+use App\Models\ProductColorImage;
+use App\Models\ProductSpecificationDetail;
+use App\Models\ProductVariant;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -98,7 +103,7 @@ class ProductController extends Controller
                 'subcategory_id' => $request->subcategory_id,
                 'brand_id' => $request->brand_id,
                 'price' => $request->price,
-                'discount' => $request->discount,
+                'discount' => $request->discount_percentage,
                 'available_qty' => $request->available_qty,
                 'video' => $request->video,
                 'is_active' => $request->is_active ?? true,
@@ -117,15 +122,67 @@ class ProductController extends Controller
                 }
             }
 
+            // PRODUCT_TAGS
+            if ($request->has('tags')) {
+                foreach ($request->tags as $tag) {
+                    $product->tags()->create([
+                        'tag' => $tag,
+                    ]);
+                }
+            }
+
             // PRODUCT_SPECIFICATIONS
-            
-            DB::commit();
-            return apiResponse([
-                'status' => true,
-                'message' => 'Product created successfully',
-                'data' => new ProductResource($product),
-                'statusCode' => Response::HTTP_CREATED,
-            ]);
+            if ($request->has('specifications')) {
+                foreach ($request->specifications as $specification) {
+                    ProductSpecificationDetail::create([
+                        'product_id' => $product->id,
+                        'header_id' => $specification['header'],
+                        'subheader_id' => $specification['subheader'],
+                        'specification' => $specification['value'],
+                    ]);
+                }
+            }
+
+            // PRODUCT_VARIANTS
+            if ($request->has('variants')) {
+                foreach ($request->variants as $variant) {
+                    $variant=ProductVariant::create([
+                        'product_id' => $product->id,
+                        'name' => $variant['name'],
+                        'price' => $variant['price'],
+                    ]);
+
+                    // PRODUCT_COLORS
+                    if (isset($variant['colors'])) {
+                        foreach ($variant['colors'] as $color) {
+                            $productColor=ProductColor::create([
+                                'product_id' => $product->id,
+                                'variant_id' => $variant->id,
+                                'color_id' => $color,
+                            ]);
+
+                            // PRODUCT_COLOR_IMAGES
+                            if (isset($color['images'])) {
+                                foreach ($color['images'] as $image) {
+                                    ProductColorImage::create([
+                                        'product_color_id' => $color['id'],
+                                        'image' => storeImage($image, 'product-colors'),
+                                    ]);
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                DB::commit();
+                return apiResponse([
+                    'status' => true,
+                    'message' => 'Product created successfully',
+                    'data' => new ProductResource($product),
+                    'statusCode' => Response::HTTP_CREATED,
+                ]);
+            }
         } catch (\Exception $e) {
             DB::rollBack();
             return apiResponse([
@@ -142,7 +199,28 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+            $item = Product::with(['category', 'subcategory', 'brand', 'productImages', 'variants', 'colors', 'specifications', 'colorImages'])->findOrFail($id);
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product retrieved successfully',
+                'data' => new ProductResource($item),
+            ]);
+        } catch (ModelNotFoundException $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'Product not found',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_NOT_FOUND,
+            ]);
+        } catch (\Exception $e) {
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while retrieving product',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**
@@ -158,6 +236,39 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            // Find the product by ID
+            $product = Product::findOrFail($id);
+
+            // Delete related records (images, specifications, tags, etc.)
+            $product->productImages()->delete();
+            $product->tags()->delete();
+            $product->specifications()->delete();
+            $product->variants()->delete();
+            $product->colors()->delete();
+            $product->colorImages()->delete();
+
+            // Delete the product itself
+            $product->delete();
+
+            DB::commit();
+
+            // Return a success response
+            return response()->json([
+                'status' => true,
+                'message' => 'Product deleted successfully',
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            // Return an error response
+            return response()->json([
+                'status' => false,
+                'message' => 'An error occurred while deleting the product',
+                'errors' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

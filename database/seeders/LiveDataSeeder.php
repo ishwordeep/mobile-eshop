@@ -33,17 +33,18 @@ class LiveDataSeeder extends Seeder
         ]);
 
         $colors = [
-            ['id' => 1, 'hex_value' => '#FF5733', 'is_active' => true],  // Red
-            ['id' => 2, 'hex_value' => '#33FF57', 'is_active' => true],  // Green
-            ['id' => 3, 'hex_value' => '#3357FF', 'is_active' => true],  // Blue
-            ['id' => 4, 'hex_value' => '#F1C40F', 'is_active' => true],  // Yellow
-            ['id' => 5, 'hex_value' => '#9B59B6', 'is_active' => true],  // Purple
-            ['id' => 6, 'hex_value' => '#1ABC9C', 'is_active' => true],  // Teal
-            ['id' => 7, 'hex_value' => '#E74C3C', 'is_active' => true],  // Light Red
-            ['id' => 8, 'hex_value' => '#3498DB', 'is_active' => true],  // Sky Blue
-            ['id' => 9, 'hex_value' => '#2ECC71', 'is_active' => true],  // Emerald Green
-            ['id' => 10, 'hex_value' => '#34495E', 'is_active' => true], // Dark Blue
+            ['id' => 1, 'name' => 'Red', 'hex_value' => '#FF5733', 'is_active' => true],
+            ['id' => 2, 'name' => 'Green', 'hex_value' => '#33FF57', 'is_active' => true],
+            ['id' => 3, 'name' => 'Blue', 'hex_value' => '#3357FF', 'is_active' => true],
+            ['id' => 4, 'name' => 'Yellow', 'hex_value' => '#F1C40F', 'is_active' => true],
+            ['id' => 5, 'name' => 'Purple', 'hex_value' => '#9B59B6', 'is_active' => true],
+            ['id' => 6, 'name' => 'Teal', 'hex_value' => '#1ABC9C', 'is_active' => true],
+            ['id' => 7, 'name' => 'Light Red', 'hex_value' => '#E74C3C', 'is_active' => true],
+            ['id' => 8, 'name' => 'Sky Blue', 'hex_value' => '#3498DB', 'is_active' => true],
+            ['id' => 9, 'name' => 'Emerald Green', 'hex_value' => '#2ECC71', 'is_active' => true],
+            ['id' => 10, 'name' => 'Dark Blue', 'hex_value' => '#34495E', 'is_active' => true],
         ];
+        
 
         // Bulk insert colors
         DB::table('colors')->insert($colors);

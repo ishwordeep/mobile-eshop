@@ -48,6 +48,12 @@ return new class extends Migration
             $table->string('image');
             $table->timestamps();
         });
+        Schema::create('product_tags', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->string('tag');
+            $table->timestamps();
+        });
 
         Schema::create('product_specification_headers', function (Blueprint $table) {
             $table->id();
