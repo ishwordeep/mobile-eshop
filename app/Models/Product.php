@@ -36,6 +36,11 @@ class Product extends Model
         return $this->belongsTo(Brand::class);
     }
 
+    public function productImages()
+    {
+        return $this->hasMany(ProductImage::class);
+    } 
+
     public function variants()
     {
         return $this->hasMany(ProductVariant::class);
@@ -50,7 +55,7 @@ class Product extends Model
         return $this->hasMany(ProductSpecificationDetail::class);
     }
 
-    public function images()
+    public function colorImages()
     {
         return $this->hasManyThrough(ProductColorImage::class, ProductColor::class);
     }

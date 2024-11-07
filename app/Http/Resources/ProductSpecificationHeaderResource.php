@@ -14,6 +14,10 @@ class ProductSpecificationHeaderResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id, // The header's ID
+            'name' => $this->name, // The header's name
+            'subheaders' => ProductSpecificationSubheaderResource::collection($this->whenLoaded('subheaders')), // Eager-loaded subheaders
+        ];
     }
 }

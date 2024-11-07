@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends Controller
@@ -86,7 +88,53 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+        try {
+            $data = [
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
+                'description' => $request->description,
+                'category_id' => $request->category_id,
+                'subcategory_id' => $request->subcategory_id,
+                'brand_id' => $request->brand_id,
+                'price' => $request->price,
+                'discount' => $request->discount,
+                'available_qty' => $request->available_qty,
+                'video' => $request->video,
+                'is_active' => $request->is_active ?? true,
+            ];
+            if ($request->hasFile('image')) {
+                $data['image'] = storeImage($request->file('image'), 'products'); // 'categories' is the folder for storing category images
+            }
+            $product = Product::create($data);
+
+            // PRODUCT_IMAGES
+            if ($request->has('images')) {
+                foreach ($request->images as $image) {
+                    $product->productImages()->create([
+                        'image' => storeImage($image, 'products'),
+                    ]);
+                }
+            }
+
+            // PRODUCT_SPECIFICATIONS
+            
+            DB::commit();
+            return apiResponse([
+                'status' => true,
+                'message' => 'Product created successfully',
+                'data' => new ProductResource($product),
+                'statusCode' => Response::HTTP_CREATED,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return apiResponse([
+                'status' => false,
+                'message' => 'An error occurred while creating product',
+                'errors' => $e->getMessage(),
+                'statusCode' => Response::HTTP_INTERNAL_SERVER_ERROR,
+            ]);
+        }
     }
 
     /**

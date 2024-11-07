@@ -23,6 +23,7 @@ return new class extends Migration
             $table->unsignedBigInteger('brand_id')->nullable();
             $table->string('video')->nullable();
             $table->integer('discount')->nullable();
+            $table->string('slug')->nullable();
 
             $table->boolean('is_new')->default(false);
             $table->boolean('is_featured')->default(false);
@@ -38,6 +39,14 @@ return new class extends Migration
             $table->index('category_id');
             $table->index('subcategory_id');
             $table->index('brand_id');
+        });
+
+        // product_images
+        Schema::create('product_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
+            $table->string('image');
+            $table->timestamps();
         });
 
         Schema::create('product_specification_headers', function (Blueprint $table) {
