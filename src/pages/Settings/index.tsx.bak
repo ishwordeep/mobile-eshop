@@ -1,0 +1,192 @@
+import { TextInput } from "@/components/Form";
+import { useGetDirtyData } from "@/hooks";
+import { useFetchInitData, useUpdateSetting } from "@/services/service-auth";
+import { toFormData } from "@/services/service-axios";
+import Loader from "@/utils/Loader";
+import { Button, Flex, GridItem, HStack, SimpleGrid } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+const Settings = () => {
+  const defaultValues = {
+    name: "",
+    email: "",
+    google_password: "",
+    google_map: "",
+    phone: "",
+    address: "",
+    description: "",
+    facebook: "",
+    instagram: "",
+    youtube: "",
+  };
+
+  const [flag, setFlag] = useState<string>("view");
+
+  const { data, isPending: isLoading } = useFetchInitData(true);
+
+  const { mutateAsync: updateSetting, isPending: isUpdating } =
+    useUpdateSetting();
+
+  const { control, handleSubmit, formState, reset } = useForm({
+    defaultValues,
+  });
+  const resetValues = {
+    name: data?.user?.name ?? "",
+    email: data?.user?.email ?? "",
+    address: data?.user?.address ?? "",
+    phone: data?.user?.phone ?? "",
+    google_password: data?.user?.google_password ?? "",
+    google_map: data?.user?.google_map ?? "",
+    description: data?.user?.description ?? "",
+    facebook: data?.user?.facebook ?? "",
+    instagram: data?.user?.instagram ?? "",
+    youtube: data?.user?.youtube ?? "",
+  };
+  useEffect(() => {
+    if (data) {
+      reset(resetValues);
+    }
+  }, [data]);
+
+  const onSubmit = async (data: typeof defaultValues) => {
+    const formData = toFormData<typeof defaultValues>(
+      useGetDirtyData(formState, data)
+    );
+    const response = await updateSetting({
+      data: formData,
+    });
+    if (response.data.status) {
+      setFlag("view");
+    }
+  };
+
+  if (isLoading) {
+    return <Loader height={"70dvh"} width={"70dvw"} />;
+  }
+
+  return (
+    <Flex flexDir={"column"} gap={6}>
+      <SimpleGrid
+        columns={{ base: 1, md: 2 }}
+        as={"form"}
+        onSubmit={handleSubmit(onSubmit)}
+        spacingX={4}
+        id="profile-form"
+      >
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="name"
+            label="Name"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="phone"
+            label="Phone"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="email"
+            type="email"
+            label="Email"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="google_password"
+            type="password"
+            label="Google Password"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="address"
+            label="Address"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="google_map"
+            label="Google Map"
+            helperText="Paste the Google Map src only from iFrame code here"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={2}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="description"
+            label="Description"
+            type="textarea"
+            isRequired
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="facebook"
+            label="Facebook"
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="instagram"
+            label="Instagram"
+          />
+        </GridItem>
+        <GridItem colSpan={{ base: 2, md: 1 }}>
+          <TextInput
+            isReadOnly={flag === "view"}
+            control={control}
+            name="youtube"
+            label="Youtube"
+          />
+        </GridItem>
+      </SimpleGrid>
+      {flag === "view" && <Button onClick={() => setFlag("edit")}>Edit</Button>}
+
+      {flag === "edit" && (
+        <HStack gap={2}>
+          {" "}
+          <Button isLoading={isUpdating} type="submit" form="profile-form">
+            Save Changes
+          </Button>
+          <Button
+            onClick={() => {
+              reset(resetValues);
+              setFlag("view");
+            }}
+            variant={"outline"}
+          >
+            Cancel
+          </Button>
+        </HStack>
+      )}
+    </Flex>
+  );
+};
+
+export default Settings;
