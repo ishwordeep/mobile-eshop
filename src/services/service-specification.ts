@@ -64,9 +64,9 @@ const useFetchHeaderList = () => {
   });
 };
 
-const useFetchSubheaderList = (headerId: number) => {
+const useFetchSubheaderList = (headerId: string) => {
   return useFetch<RootResponse<ISubheader>>({
-    url: Api.Specification.getOne.replace(":id", headerId + ""),
+    url: Api.Specification.getSubHeaderList.replace(":id", headerId),
     queryKey: ["subheaders", headerId],
     enabled: !!headerId,
   });

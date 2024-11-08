@@ -1,6 +1,7 @@
 import {
   AsteriskSimple,
   CoatHanger,
+  Coin,
   House,
   Palette,
   QuestionMark,
@@ -70,5 +71,10 @@ export const sidebarItems = [
         to: "/product/reviews",
       },
     ],
+  },
+  {
+    title: "Charges",
+    icon: Coin,
+    to: "/charges",
   },
 ];

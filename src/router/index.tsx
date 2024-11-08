@@ -72,6 +72,10 @@ const appRoutes = [
         ],
       },
       {
+        path: "/charges",
+        element: <ROUTES.Charge />,
+      },
+      {
         path: "/settings",
         element: <ROUTES.Setting />,
       },

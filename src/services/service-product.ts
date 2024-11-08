@@ -1,10 +1,32 @@
-import { Api } from "./service-api";
-import { useMutate } from "./service-form-methods";
+import { Api, IPagination } from "./service-api";
+import { useFetch, useMutate } from "./service-form-methods";
+import { RootResponse } from "./service-interface";
+
+const useFetchProducts = ({
+  page = 1,
+  perPage = 10,
+  keyword = "",
+}: IPagination) => {
+  return useFetch<RootResponse<any>>({
+    url: Api.Product.get({ page, perPage, keyword }),
+    queryKey: ["products", page, perPage, keyword],
+  });
+};
+
+const useDeleteProduct = () => {
+  return useMutate({
+    url: Api.Product.delete,
+    invalidates: ["products"],
+    method: "DELETE",
+    message: "Product deleted successfully",
+  });
+};
 
 const useCreateGeneral = () => {
   return useMutate({
     url: Api.Product.createGeneral,
     invalidates: ["products"],
+    message: "Product created successfully",
   });
 };
 
@@ -37,4 +59,6 @@ export {
   useCreateImages,
   useCreateSpecification,
   useCreateVariant,
+  useDeleteProduct,
+  useFetchProducts,
 };

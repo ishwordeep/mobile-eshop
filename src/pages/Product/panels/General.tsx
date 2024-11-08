@@ -32,7 +32,8 @@ const General = () => {
   const categoryId = useWatch({ control, name: "category_id" });
   const { data: categoryList } = useFetchCategoryList();
   const { data: subCategoryList } = useFetchSubCategoryList(categoryId!);
-  const { mutateAsync: createGeneral } = useCreateGeneral();
+  const { mutateAsync: createGeneral, isPending: isAdding } =
+    useCreateGeneral();
   const categoryOptions = formatSelectOptions({
     data: categoryList?.data?.rows,
     labelKey: "name",
@@ -131,7 +132,9 @@ const General = () => {
         </Grid>
       </ProductCard>
 
-      <Button type="submit">Save & Next</Button>
+      <Button isLoading={isAdding} type="submit">
+        Save & Next
+      </Button>
     </Stack>
   );
 };

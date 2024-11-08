@@ -99,10 +99,32 @@ const Specification = {
 };
 
 const Product = {
+  get: ({ page, perPage, keyword }: IPagination) => {
+    let url = `/product?page=${page}&per_page=${perPage}`;
+    if (keyword) {
+      url += `&keyword=${keyword}`;
+    }
+    return url;
+  },
+  delete: "/product/:id",
   createGeneral: "/product",
   createImages: "/product/images/:id",
   createVariant: "/product/variant/:id",
   createSpecification: "/product/specification/:id",
+};
+
+const DeliveryCharge = {
+  create: "/delivery-charge",
+  get: ({ page, perPage, keyword }: IPagination) => {
+    let url = `/delivery-charge?page=${page}&per_page=${perPage}`;
+    if (keyword) {
+      url += `&keyword=${keyword}`;
+    }
+    return url;
+  },
+  getOne: `/delivery-charge/:id`,
+  update: "/delivery-charge/:id",
+  delete: "/delivery-charge/:id",
 };
 
 export const Api = {
@@ -114,4 +136,5 @@ export const Api = {
   Brand,
   Specification,
   Product,
+  DeliveryCharge,
 };

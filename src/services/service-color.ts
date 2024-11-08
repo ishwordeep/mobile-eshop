@@ -4,7 +4,7 @@ import { RootResponse, SingleDataResponse } from "./service-interface";
 
 export interface ColorResponse {
   id: number;
-  name: string;
+  label: string;
   is_active: boolean;
   hex_value: string;
 }

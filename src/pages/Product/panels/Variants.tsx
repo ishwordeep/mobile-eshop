@@ -1,9 +1,8 @@
 import { ReactDropzone, SelectInput, TextInput } from "@/components/Form";
 import { useFetchColorList } from "@/services/service-color";
-import { formatSelectOptions } from "@/utils/format";
 import {
-  Box,
   Button,
+  Flex,
   Icon,
   IconButton,
   Stack,
@@ -16,7 +15,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { XCircle } from "@phosphor-icons/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { ProductCard } from "../Form";
 
@@ -34,7 +33,7 @@ import { ProductCard } from "../Form";
 const THeads = ["Name", "Price", "Colors", "Images"];
 
 const Variants = () => {
-  const { control } = useForm();
+  const { control, handleSubmit } = useForm();
   const { data: colors } = useFetchColorList();
   const attributes = {
     borderBottom: "2px solid var(--chakra-colors-gray-300)",
@@ -47,12 +46,20 @@ const Variants = () => {
     control,
     name: "variants",
   });
-  const colorOptions = formatSelectOptions({
-    data: colors?.data?.rows,
-    valueKey: "id",
-    labelKey: "label",
-    icon: <Box boxSize={6} borderRadius={"50%"} bg={"hex_value"} />,
-  });
+
+  const [colorOptions, setColorOptions] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (colors?.data.count ?? 0 > 0) {
+      setColorOptions(
+        colors?.data.rows?.map((item) => ({
+          label: item.label,
+          value: item.id.toString(),
+          box: item.hex_value,
+        })) || []
+      );
+    }
+  }, [colors?.data]);
 
   // Ensure at least one variant is added initially
   useEffect(() => {
@@ -72,6 +79,10 @@ const Variants = () => {
 
   const handleRemoveField = (index: number) => {
     remove(index);
+  };
+
+  const onSubmit = (data: any) => {
+    console.log(data);
   };
 
   const renderVariantFields = () => {
@@ -101,6 +112,7 @@ const Variants = () => {
                   <TextInput
                     name={`variants[${index}].price`}
                     control={control}
+                    type={"number"}
                   />
                 </Td>
                 <Td {...attributes} colSpan={1}>
@@ -152,14 +164,22 @@ const Variants = () => {
   };
 
   return (
-    <ProductCard heading="Product Variants">
-      <Stack gap={2}>
-        {renderVariantFields()}
-        <Stack gap={2} w={"fit-content"} mt={4}>
-          <Button onClick={handelAddField}>Add More</Button>
+    <Flex
+      as={"form"}
+      flexDir={"column"}
+      gap={8}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <ProductCard heading="Product Variants">
+        <Stack gap={2}>
+          {renderVariantFields()}
+          <Stack gap={2} w={"fit-content"} mt={4}>
+            <Button onClick={handelAddField}>Add More</Button>
+          </Stack>
         </Stack>
-      </Stack>
-    </ProductCard>
+      </ProductCard>
+      <Button type={"submit"}>Submit</Button>
+    </Flex>
   );
 };
 

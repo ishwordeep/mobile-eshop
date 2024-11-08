@@ -11,6 +11,7 @@ const ProductForm = lazy(() => import("@/pages/Product/Form"));
 const Color = lazy(() => import("@/pages/Color"));
 const Setting = lazy(() => import("@/pages/Settings"));
 const Specification = lazy(() => import("@/pages/Specification"));
+const Charge = lazy(() => import("@/pages/Charge"));
 export const ROUTES = {
   Register,
   Login,
@@ -23,4 +24,5 @@ export const ROUTES = {
   Color,
   Setting,
   Specification,
+  Charge,
 };

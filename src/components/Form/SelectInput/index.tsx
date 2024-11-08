@@ -62,12 +62,7 @@ const SelectInput: FC<ISelect> = ({
           />
         )}
         {props.data.box && (
-          <Box
-            weight={"fill"}
-            as={props.data.icon}
-            boxSize={5}
-            color={"primary.500"}
-          />
+          <Box boxSize={5} borderRadius={"full"} bg={props.data.box} />
         )}
         <span>{props.data.label}</span>
       </HStack>
@@ -78,7 +73,9 @@ const SelectInput: FC<ISelect> = ({
     <chakraComponents.Option {...props}>
       <HStack gap={2} align={"center"}>
         {props.data.icon && <Icon as={props.data.icon} boxSize={5} />}
-
+        {props.data.box && (
+          <Box boxSize={5} borderRadius={"full"} bg={props.data.box} />
+        )}
         <span>{props.data.label}</span>
       </HStack>
     </chakraComponents.Option>
